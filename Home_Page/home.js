@@ -34,6 +34,74 @@ const fallbackFoodImages = [
   'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400'
 ];
 
+// Fallback restaurants data when APIs fail
+const fallbackRestaurants = [
+  {
+    id: 1,
+    title: 'Biryani Palace',
+    image: 'https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['Indian', 'Biryani'],
+    readyInMinutes: 35,
+    spoonacularScore: 85
+  },
+  {
+    id: 2,
+    title: 'Pizza Express',
+    image: 'https://images.pexels.com/photos/3915857/pexels-photo-3915857.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['Italian', 'Pizza'],
+    readyInMinutes: 25,
+    spoonacularScore: 82
+  },
+  {
+    id: 3,
+    title: 'Burger Haven',
+    image: 'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['American', 'Fast Food'],
+    readyInMinutes: 20,
+    spoonacularScore: 80
+  },
+  {
+    id: 4,
+    title: 'Pasta Kitchen',
+    image: 'https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['Italian', 'Pasta'],
+    readyInMinutes: 30,
+    spoonacularScore: 84
+  },
+  {
+    id: 5,
+    title: 'Sushi Garden',
+    image: 'https://images.pexels.com/photos/2641886/pexels-photo-2641886.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['Japanese', 'Sushi'],
+    readyInMinutes: 40,
+    spoonacularScore: 87
+  },
+  {
+    id: 6,
+    title: 'Dosa Delight',
+    image: 'https://images.pexels.com/photos/1373915/pexels-photo-1373915.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['Indian', 'South Indian'],
+    readyInMinutes: 28,
+    spoonacularScore: 81
+  },
+  {
+    id: 7,
+    title: 'Taco Fiesta',
+    image: 'https://images.pexels.com/photos/5737442/pexels-photo-5737442.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['Mexican', 'Tacos'],
+    readyInMinutes: 22,
+    spoonacularScore: 79
+  },
+  {
+    id: 8,
+    title: 'Noodle House',
+    image: 'https://images.pexels.com/photos/821365/pexels-photo-821365.jpeg?auto=compress&cs=tinysrgb&w=400',
+    cuisines: ['Chinese', 'Noodles'],
+    readyInMinutes: 26,
+    spoonacularScore: 83
+  }
+];
+
 // Hamburger menu toggle
 hamburger.addEventListener('click', () => {
   navMenu.classList.toggle('active');
@@ -151,13 +219,17 @@ async function fetchFromMealDB(query) {
       }));
       applyFilters();
     } else {
-      showError('No meals found in either database. Try a different search term.');
-      currentRecipes = [];
-      renderRestaurants([]);
+      console.warn('No meals found in TheMealDB, using fallback restaurants...');
+      showError('Using offline restaurant data. APIs temporarily unavailable.');
+      currentRecipes = fallbackRestaurants;
+      applyFilters();
     }
   } catch (error) {
     console.error('TheMealDB error:', error);
-    showError(`Failed to search both APIs: ${error.message}`);
+    console.warn('Using fallback restaurants data...');
+    showError('APIs unavailable. Showing available restaurants from local data.');
+    currentRecipes = fallbackRestaurants;
+    applyFilters();
   } finally {
     hideLoading();
   }
@@ -413,6 +485,17 @@ function addToCart(id, title, price) {
 
 // Load popular restaurants on page load
 window.addEventListener('load', () => {
-  searchRecipes('popular restaurants');
-  loadSuggestions();
+  // Try to load from API, otherwise fallback to default restaurants
+  searchRecipes('popular restaurants').catch(() => {
+    console.log('Loading fallback restaurants...');
+    currentRecipes = fallbackRestaurants;
+    renderRestaurants(fallbackRestaurants);
+  });
+  
+  loadSuggestions().catch(() => {
+    console.log('Loading fallback suggestions...');
+    suggestions = fallbackRestaurants.slice(0, 6);
+    currentSuggestionIndex = 0;
+    renderSuggestions();
+  });
 });
