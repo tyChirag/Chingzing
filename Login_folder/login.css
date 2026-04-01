@@ -29,7 +29,7 @@ body {
   padding: 50px 40px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
 }
 
 .left h1 {
@@ -62,8 +62,10 @@ input:focus {
 
 /* Forgot */
 .forgot {
+  display: block;
   text-align: right;
   font-size: 13px;
+  margin-top: -5px;
   margin-bottom: 20px;
   color: #777;
   cursor: pointer;
@@ -75,10 +77,11 @@ input:focus {
   background: #000;
   color: #fff;
   border: none;
-  padding: 14px;
+  padding: 14px 18px;
   border-radius: 30px;
   cursor: pointer;
   margin-bottom: 20px;
+  width: 100%;
   transition: 0.3s;
 }
 
@@ -145,6 +148,51 @@ input:focus {
   font-size: 14px;
   color: #555;
   text-align: center;
+}
+
+.redirect-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.redirect-overlay.active {
+  display: flex;
+}
+
+.loader-box {
+  background: white;
+  padding: 20px 25px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.25);
+}
+
+.ball {
+  width: 12px;
+  height: 12px;
+  margin: 0 5px;
+  border-radius: 50%;
+  background: #000;
+  display: inline-block;
+  animation: jump 0.6s ease-in-out infinite;
+}
+
+.ball:nth-child(2) {
+  animation-delay: 0.1s;
+}
+
+.ball:nth-child(3) {
+  animation-delay: 0.2s;
+}
+
+@keyframes jump {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
 }
 
 .register span {

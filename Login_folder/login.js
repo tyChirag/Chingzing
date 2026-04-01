@@ -22,6 +22,7 @@ function getStoredUser() {
 
 function saveUserLocally(user) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  console.log('User saved to localStorage:', user);
 }
 
 function saveUserToApi(user) {
@@ -47,6 +48,24 @@ function init() {
   }
 }
 
+function goToHomePage() {
+  const homeUrl = new URL('../Home_Page/home.html', window.location.href).href;
+  console.log('Redirecting to home page URL:', homeUrl);
+  window.location.href = homeUrl;
+}
+
+function showRedirectAnimation() {
+  const overlay = document.getElementById('redirect-overlay');
+  if (!overlay) return;
+  overlay.classList.add('active');
+}
+
+function hideRedirectAnimation() {
+  const overlay = document.getElementById('redirect-overlay');
+  if (!overlay) return;
+  overlay.classList.remove('active');
+}
+
 loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const username = usernameInput.value.trim();
@@ -59,18 +78,21 @@ loginForm.addEventListener('submit', async (event) => {
 
   const storedUser = getStoredUser();
 
+  console.log('Login attempt:', { username, hasStoredUser: !!storedUser });
+
   if (storedUser && storedUser.username === username && storedUser.password === password) {
     setMessage('Login successful! Redirecting...', 'success');
+    saveUserLocally({ username, password });
+    console.log('Existing user login successful.');
     try {
       await saveUserToApi({ username, password });
       console.log('Logged in request stored via API');
     } catch (err) {
       console.warn('API save failed, but local login succeeded', err);
     }
-    // Redirect to home page after 1 second
-    setTimeout(() => {
-      window.location.href = '../Home_Page/home.html';
-    }, 1000);
+
+    showRedirectAnimation();
+    setTimeout(goToHomePage, 800);
     return;
   }
 
@@ -88,6 +110,7 @@ loginForm.addEventListener('submit', async (event) => {
   const newUser = { username, password };
   saveUserLocally(newUser);
   setMessage('Registration successful! Redirecting...', 'success');
+  console.log('New user registered, saving and redirecting...');
 
   try {
     await saveUserToApi(newUser);
@@ -95,11 +118,10 @@ loginForm.addEventListener('submit', async (event) => {
   } catch (err) {
     console.warn('Could not save to API, local storage still works', err);
   }
-  
-  // Redirect to home page after 1 second
-  setTimeout(() => {
-    window.location.href = '../Home_Page/home.html';
-  }, 1000);
+
+  showRedirectAnimation();
+
+  setTimeout(goToHomePage, 800);
 });
 
 registerLink.addEventListener('click', (e) => {
@@ -114,4 +136,7 @@ registerLink.addEventListener('click', (e) => {
   setMessage('Registered and saved locally. Please use the same credentials next time.', 'success');
 });
 
-init();
+window.addEventListener('DOMContentLoaded', () => {
+  console.log('Login page loaded');
+  init();
+});
