@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chingzing - Food Delivery</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <i class="fas fa-utensils"></i> Chingzing
+      </div>
+      <ul class="nav-menu">
+        <li><a href="#home" class="nav-link">Home</a></li>
+        <li><a href="#search" class="nav-link">Search</a></li>
+        <li><a href="#recipes" class="nav-link">Recipes</a></li>
+        <li><a href="#contact" class="nav-link">Contact</a></li>
+        <li><a href="login.html" class="nav-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <h1>Welcome to Chingzing</h1>
+      <p>Discover amazing recipes and food delivered to your door</p>
+      <button class="cta-btn">Order Now</button>
+    </div>
+  </section>
+
+  <section class="search-section" id="search">
+    <div class="container">
+      <h2>Find Your Favorite Recipes</h2>
+      <div class="search-box">
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Search recipes (e.g., pasta, burger, pizza)..." 
+          class="search-input"
+        >
+        <button id="search-btn" class="search-btn">
+          <i class="fas fa-search"></i> Search
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <section class="filters-section">
+    <div class="container">
+      <h3>Filter by</h3>
+      <div class="filter-group">
+        <label>
+          <input type="checkbox" class="diet-filter" value="vegetarian">
+          <span>Vegetarian</span>
+        </label>
+        <label>
+          <input type="checkbox" class="diet-filter" value="vegan">
+          <span>Vegan</span>
+        </label>
+        <label>
+          <input type="checkbox" class="diet-filter" value="gluten free">
+          <span>Gluten Free</span>
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <section class="recipes-section" id="recipes">
+    <div class="container">
+      <h2>Popular Recipes</h2>
+      <div id="recipes-grid" class="recipes-grid">
+      </div>
+      <div id="loading" class="loading">Loading recipes...</div>
+      <div id="error" class="error"></div>
+    </div>
+  </section>
+
+  <footer class="footer" id="contact">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h4>Chingzing</h4>
+          <p>Your favorite food delivery app with authentic recipes.</p>
+        </div>
+        <div class="footer-section">
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#recipes">Recipes</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h4>Contact</h4>
+          <p>Email: support@chingzing.com</p>
+          <p>Phone: +1-800-CHINGZING</p>
+        </div>
+        <div class="footer-section">
+          <h4>Follow Us</h4>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-google"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Chingzing. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="home.js"></script>
+</body>
+</html>
