@@ -88,14 +88,24 @@ async function searchRecipes(query) {
   clearError();
 
   try {
-    const url = `${API_BASE}/complexSearch?query=${encodeURIComponent(query)}&number=12&apiKey=${API_KEY}`;
-    const response = await fetch(url);
+    const url = `${API_BASE}/complexSearch?query=${encodeURIComponent(query)}&number=12&apiKey=${API_KEY}&addRecipeInformation=true`;
+    console.log('Fetching:', url);
     
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
-
+    const response = await fetch(url);
     const data = await response.json();
+    
+    console.log('Response status:', response.status);
+    console.log('Response data:', data);
+
+    if (!response.ok) {
+      if (response.status === 402) {
+        throw new Error('API quota exceeded. Please check your Spoonacular plan.');
+      } else if (response.status === 401) {
+        throw new Error('Invalid API key. Please check your Spoonacular API key.');
+      } else {
+        throw new Error(`API Error: ${response.status} - ${data.message || 'Unknown error'}`);
+      }
+    }
 
     if (data.results && data.results.length > 0) {
       currentRecipes = data.results;
@@ -107,7 +117,7 @@ async function searchRecipes(query) {
     }
   } catch (error) {
     console.error('Search Error:', error);
-    showError(`Failed to search restaurants: ${error.message}`);
+    showError(`Failed to search restaurants: ${error.message}. Check browser console for details.`);
   } finally {
     hideLoading();
   }
@@ -236,15 +246,24 @@ async function loadSuggestions() {
     const foodItems = ['pizza', 'burger', 'pasta', 'biryani', 'sandwich', 'noodles', 'dosa', 'samosa', 'tacos', 'salad', 'soup', 'sushi'];
     const randomFood = foodItems[Math.floor(Math.random() * foodItems.length)];
     
-    const url = `${API_BASE}/complexSearch?query=${randomFood}&number=12&apiKey=${API_KEY}`;
-    const response = await fetch(url);
+    const url = `${API_BASE}/complexSearch?query=${randomFood}&number=12&apiKey=${API_KEY}&addRecipeInformation=true`;
+    console.log('Loading suggestions from:', url);
     
-    if (!response.ok) {
-      throw new Error('Failed to load suggestions');
-    }
-
+    const response = await fetch(url);
     const data = await response.json();
     
+    console.log('Suggestions response status:', response.status);
+    console.log('Suggestions data:', data);
+
+    if (!response.ok) {
+      if (response.status === 402) {
+        console.error('API quota exceeded for suggestions');
+      } else if (response.status === 401) {
+        console.error('Invalid API key for suggestions');
+      }
+      throw new Error(`Failed to load suggestions: ${response.status}`);
+    }
+
     if (data.results && data.results.length > 0) {
       suggestions = data.results;
       currentSuggestionIndex = 0;
