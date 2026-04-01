@@ -7,8 +7,7 @@
 
 
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="login.css">
 </head>
 <body>
@@ -19,27 +18,30 @@
     <div class="left">
       <h1>Welcome Back!</h1>
       <p>Sign in with your Username and Password</p>
+      <form id="login-form">
+        <div class="input-group">
+          <input id="username" name="username" type="text" placeholder="Username" required>
+        </div>
 
-      <div class="input-group">
-        <input type="text" placeholder="Username">
-      </div>
+        <div class="input-group">
+          <input id="password" name="password" type="password" placeholder="Password" required>
+        </div>
 
-      <div class="input-group">
-        <input type="password" placeholder="Password">
-      </div>
+      <a href="" class="forgot">Forgot Password?</a>
 
-      <div class="forgot">Forgot Password?</div>
+      <button type="submit" class="login-btn">Login</button>
 
-      <button class="login-btn">Login</button>
+      </form>
 
       <div class="divider">or login with</div>
 
-      <div class="social-btn">Login with Google</div>
-      <div class="social-btn">Login with Facebook</div>
+      <button class="social-btn google-btn"><i class="fab fa-google"></i> Login with Google</button>
+      <button class="social-btn facebook-btn"><i class="fab fa-facebook-f"></i> Login with Facebook</button>
 
       <div class="register">
         Did not have an account? <span>Register Now</span>
       </div>
+      <div id="message" class="message"></div>
     </div>
 
     <div class="right"></div>
