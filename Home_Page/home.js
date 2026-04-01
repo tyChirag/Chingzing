@@ -1,5 +1,6 @@
 const API_KEY = '3d30233c2fb74036bd34ab8ba588a5ca';
 const API_BASE = 'https://api.spoonacular.com/recipes';
+const MEALDB_API = 'https://www.themealdb.com/api/json/v1/1';
 
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
@@ -89,21 +90,23 @@ async function searchRecipes(query) {
 
   try {
     const url = `${API_BASE}/complexSearch?query=${encodeURIComponent(query)}&number=12&apiKey=${API_KEY}&addRecipeInformation=true`;
-    console.log('Fetching:', url);
+    console.log('Fetching from Spoonacular:', url);
     
     const response = await fetch(url);
     const data = await response.json();
     
-    console.log('Response status:', response.status);
-    console.log('Response data:', data);
+    console.log('Spoonacular response status:', response.status);
+    console.log('Spoonacular data:', data);
 
     if (!response.ok) {
       if (response.status === 402) {
-        throw new Error('API quota exceeded. Please check your Spoonacular plan.');
+        console.warn('Spoonacular quota exceeded, trying TheMealDB backup...');
+        return fetchFromMealDB(query);
       } else if (response.status === 401) {
-        throw new Error('Invalid API key. Please check your Spoonacular API key.');
+        throw new Error('Invalid Spoonacular API key.');
       } else {
-        throw new Error(`API Error: ${response.status} - ${data.message || 'Unknown error'}`);
+        console.warn('Spoonacular error, trying TheMealDB backup...');
+        return fetchFromMealDB(query);
       }
     }
 
@@ -111,13 +114,50 @@ async function searchRecipes(query) {
       currentRecipes = data.results;
       applyFilters();
     } else {
-      showError('No restaurants found. Try a different search term.');
+      console.warn('No Spoonacular results, trying TheMealDB...');
+      fetchFromMealDB(query);
+    }
+  } catch (error) {
+    console.error('Spoonacular error:', error);
+    console.warn('Falling back to TheMealDB API...');
+    fetchFromMealDB(query);
+  } finally {
+    hideLoading();
+  }
+}
+
+async function fetchFromMealDB(query) {
+  try {
+    showLoading();
+    clearError();
+    
+    console.log('Fetching from TheMealDB for:', query);
+    const url = `${MEALDB_API}/search.php?s=${encodeURIComponent(query)}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    console.log('TheMealDB response:', data);
+
+    if (data.meals && data.meals.length > 0) {
+      // Transform MealDB data to match our format
+      currentRecipes = data.meals.slice(0, 12).map((meal, index) => ({
+        id: meal.idMeal,
+        title: meal.strMeal,
+        image: meal.strMealThumb,
+        cuisines: [meal.strArea || 'International'],
+        readyInMinutes: Math.floor(Math.random() * 30) + 15,
+        spoonacularScore: (Math.random() * 100)
+      }));
+      applyFilters();
+    } else {
+      showError('No meals found in either database. Try a different search term.');
       currentRecipes = [];
       renderRestaurants([]);
     }
   } catch (error) {
-    console.error('Search Error:', error);
-    showError(`Failed to search restaurants: ${error.message}. Check browser console for details.`);
+    console.error('TheMealDB error:', error);
+    showError(`Failed to search both APIs: ${error.message}`);
   } finally {
     hideLoading();
   }
@@ -247,21 +287,16 @@ async function loadSuggestions() {
     const randomFood = foodItems[Math.floor(Math.random() * foodItems.length)];
     
     const url = `${API_BASE}/complexSearch?query=${randomFood}&number=12&apiKey=${API_KEY}&addRecipeInformation=true`;
-    console.log('Loading suggestions from:', url);
+    console.log('Loading suggestions from Spoonacular:', randomFood);
     
     const response = await fetch(url);
     const data = await response.json();
     
     console.log('Suggestions response status:', response.status);
-    console.log('Suggestions data:', data);
 
     if (!response.ok) {
-      if (response.status === 402) {
-        console.error('API quota exceeded for suggestions');
-      } else if (response.status === 401) {
-        console.error('Invalid API key for suggestions');
-      }
-      throw new Error(`Failed to load suggestions: ${response.status}`);
+      console.warn('Spoonacular suggestions failed, trying TheMealDB...');
+      return loadSuggestionsFromMealDB(randomFood);
     }
 
     if (data.results && data.results.length > 0) {
@@ -273,9 +308,49 @@ async function loadSuggestions() {
       setInterval(() => {
         loadSuggestions();
       }, 30000);
+    } else {
+      console.warn('No Spoonacular suggestions, trying TheMealDB...');
+      loadSuggestionsFromMealDB(randomFood);
     }
   } catch (error) {
-    console.error('Suggestions Error:', error);
+    console.error('Spoonacular suggestions error:', error);
+    const foodItems = ['pizza', 'burger', 'pasta', 'biryani', 'sandwich', 'noodles', 'dosa', 'samosa', 'tacos', 'salad', 'soup', 'sushi'];
+    const randomFood = foodItems[Math.floor(Math.random() * foodItems.length)];
+    loadSuggestionsFromMealDB(randomFood);
+  }
+}
+
+async function loadSuggestionsFromMealDB(foodQuery) {
+  try {
+    console.log('Loading suggestions from TheMealDB:', foodQuery);
+    const url = `${MEALDB_API}/search.php?s=${encodeURIComponent(foodQuery)}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    console.log('TheMealDB suggestions response:', data);
+
+    if (data.meals && data.meals.length > 0) {
+      // Transform MealDB meals to match our format
+      suggestions = data.meals.slice(0, 12).map(meal => ({
+        id: meal.idMeal,
+        title: meal.strMeal,
+        image: meal.strMealThumb,
+        cuisines: [meal.strArea || 'International'],
+        readyInMinutes: Math.floor(Math.random() * 30) + 15,
+        spoonacularScore: (Math.random() * 100)
+      }));
+      
+      currentSuggestionIndex = 0;
+      renderSuggestions();
+      
+      // Refresh suggestions every 30 seconds
+      setInterval(() => {
+        loadSuggestions();
+      }, 30000);
+    }
+  } catch (error) {
+    console.error('TheMealDB suggestions error:', error);
   }
 }
 
