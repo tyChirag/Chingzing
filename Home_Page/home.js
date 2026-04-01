@@ -107,9 +107,11 @@ const fallbackRestaurants = [
 // Check if user is logged in
 function checkUserLogin() {
   const storedUser = localStorage.getItem(STORAGE_KEY);
+  console.log('checkUserLogin:', { storedUser });
   if (!storedUser) {
-    // Redirect to login page if not logged in
-    window.location.href = '../Login_folder/login.html';
+    const loginUrl = new URL('../Login_folder/login.html', window.location.href).href;
+    console.log('No user logged in, redirect to', loginUrl);
+    window.location.href = loginUrl;
   }
 }
 
