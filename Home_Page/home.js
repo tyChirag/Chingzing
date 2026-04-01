@@ -12,9 +12,14 @@ const deliveryFilter = document.getElementById('delivery-filter');
 const sortBtn = document.getElementById('sort-btn');
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
+const suggestionsGrid = document.getElementById('suggestions-grid');
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
 
 let currentRecipes = [];
 let sortOrder = 'default';
+let suggestions = [];
+let currentSuggestionIndex = 0;
 
 // Hamburger menu toggle
 hamburger.addEventListener('click', () => {
@@ -25,6 +30,17 @@ document.querySelectorAll('.nav-link').forEach(link => {
   link.addEventListener('click', () => {
     navMenu.classList.remove('active');
   });
+});
+
+// Carousel navigation
+prevBtn.addEventListener('click', () => {
+  currentSuggestionIndex = Math.max(0, currentSuggestionIndex - 3);
+  renderSuggestions();
+});
+
+nextBtn.addEventListener('click', () => {
+  currentSuggestionIndex = Math.min(suggestions.length - 3, currentSuggestionIndex + 3);
+  renderSuggestions();
 });
 
 // Search functionality
@@ -202,7 +218,89 @@ function clearError() {
   errorDiv.style.display = 'none';
 }
 
+// Food Suggestions Functions
+async function loadSuggestions() {
+  try {
+    const foodItems = ['pizza', 'burger', 'pasta', 'biryani', 'sandwich', 'noodles', 'dosa', 'samosa', 'tacos', 'salad', 'soup', 'sushi'];
+    const randomFood = foodItems[Math.floor(Math.random() * foodItems.length)];
+    
+    const url = `${API_BASE}/complexSearch?query=${randomFood}&number=12&apiKey=${API_KEY}`;
+    const response = await fetch(url);
+    
+    if (!response.ok) {
+      throw new Error('Failed to load suggestions');
+    }
+
+    const data = await response.json();
+    
+    if (data.results && data.results.length > 0) {
+      suggestions = data.results;
+      currentSuggestionIndex = 0;
+      renderSuggestions();
+      
+      // Refresh suggestions every 30 seconds
+      setInterval(() => {
+        loadSuggestions();
+      }, 30000);
+    }
+  } catch (error) {
+    console.error('Suggestions Error:', error);
+  }
+}
+
+function renderSuggestions() {
+  suggestionsGrid.innerHTML = '';
+
+  if (suggestions.length === 0) {
+    return;
+  }
+
+  // Show 3 items at a time
+  const itemsToShow = suggestions.slice(currentSuggestionIndex, currentSuggestionIndex + 3);
+
+  itemsToShow.forEach(recipe => {
+    const card = document.createElement('div');
+    card.className = 'suggestion-card';
+
+    const price = Math.floor(Math.random() * 400) + 150; // Random price 150-550
+    const deliveryTime = recipe.readyInMinutes || Math.floor(Math.random() * 30) + 15;
+    const discount = [10, 15, 20, 25, 30][Math.floor(Math.random() * 5)];
+
+    card.innerHTML = `
+      <img src="${recipe.image || 'https://via.placeholder.com/200x140?text=Food'}" alt="${recipe.title}" class="suggestion-image">
+      <div class="suggestion-info">
+        <h3 class="suggestion-name">${recipe.title}</h3>
+        <p class="suggestion-desc">${recipe.cuisines && recipe.cuisines.length > 0 ? recipe.cuisines[0] + ' cuisine' : 'Delicious dish'}</p>
+        
+        <div class="suggestion-meta">
+          <span><i class="fas fa-star" style="color: #ffc107;"></i> ${(Math.random() * 2 + 3.5).toFixed(1)}</span>
+          <span><i class="fas fa-clock"></i> ${deliveryTime}m</span>
+          <span style="color: var(--primary-color); font-weight: 600;">-${discount}%</span>
+        </div>
+
+        <div class="suggestion-price">₹${price}</div>
+        <button class="suggestion-add-btn" data-id="${recipe.id}">Add to Cart</button>
+      </div>
+    `;
+
+    card.querySelector('.suggestion-add-btn').addEventListener('click', () => {
+      addToCart(recipe.id, recipe.title, price);
+    });
+
+    suggestionsGrid.appendChild(card);
+  });
+
+  // Update button states
+  prevBtn.disabled = currentSuggestionIndex === 0;
+  nextBtn.disabled = currentSuggestionIndex + 3 >= suggestions.length;
+}
+
+function addToCart(id, title, price) {
+  alert(`Added "${title}" (₹${price}) to cart!`);
+}
+
 // Load popular restaurants on page load
 window.addEventListener('load', () => {
   searchRecipes('popular restaurants');
+  loadSuggestions();
 });
