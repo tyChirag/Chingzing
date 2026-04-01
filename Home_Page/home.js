@@ -1,23 +1,26 @@
-const API_KEY = '3d30233c2fb74036bd34ab8ba588a5ca'; // Spoonacular API key
+const API_KEY = '3d30233c2fb74036bd34ab8ba588a5ca';
 const API_BASE = 'https://api.spoonacular.com/recipes';
 
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
-const recipesGrid = document.getElementById('recipes-grid');
+const restaurantsGrid = document.getElementById('restaurants-grid');
 const loadingDiv = document.getElementById('loading');
 const errorDiv = document.getElementById('error');
-const dietFilters = document.querySelectorAll('.diet-filter');
+const cuisineFilter = document.getElementById('cuisine-filter');
+const ratingFilter = document.getElementById('rating-filter');
+const deliveryFilter = document.getElementById('delivery-filter');
+const sortBtn = document.getElementById('sort-btn');
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
 
 let currentRecipes = [];
+let sortOrder = 'default';
 
 // Hamburger menu toggle
 hamburger.addEventListener('click', () => {
   navMenu.classList.toggle('active');
 });
 
-// Close menu when link is clicked
 document.querySelectorAll('.nav-link').forEach(link => {
   link.addEventListener('click', () => {
     navMenu.classList.remove('active');
@@ -41,9 +44,15 @@ searchInput.addEventListener('keypress', (e) => {
   }
 });
 
-// Diet filter functionality
-dietFilters.forEach(filter => {
-  filter.addEventListener('change', applyFilters);
+// Filter listeners
+cuisineFilter.addEventListener('change', applyFilters);
+ratingFilter.addEventListener('change', applyFilters);
+deliveryFilter.addEventListener('change', applyFilters);
+
+// Sort button
+sortBtn.addEventListener('click', () => {
+  sortOrder = sortOrder === 'default' ? 'rating' : 'default';
+  applyFilters();
 });
 
 async function searchRecipes(query) {
@@ -64,102 +73,119 @@ async function searchRecipes(query) {
       currentRecipes = data.results;
       applyFilters();
     } else {
-      showError('No recipes found. Try a different search term.');
+      showError('No restaurants found. Try a different search term.');
       currentRecipes = [];
-      renderRecipes([]);
+      renderRestaurants([]);
     }
   } catch (error) {
     console.error('Search Error:', error);
-    showError(`Failed to search recipes: ${error.message}`);
+    showError(`Failed to search restaurants: ${error.message}`);
   } finally {
     hideLoading();
   }
 }
 
-async function getRecipeDetails(id) {
-  try {
-    const url = `${API_BASE}/${id}/information?apiKey=${API_KEY}`;
-    const response = await fetch(url);
-    
-    if (!response.ok) {
-      throw new Error(`API Error: ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Details Error:', error);
-    return null;
-  }
-}
-
 function applyFilters() {
-  const selectedDiets = Array.from(dietFilters)
-    .filter(filter => filter.checked)
-    .map(filter => filter.value.toLowerCase());
+  let filtered = [...currentRecipes];
 
-  let filtered = currentRecipes;
-
-  if (selectedDiets.length > 0) {
-    filtered = currentRecipes.filter(recipe => {
-      const recipeDiets = (recipe.diets || []).map(d => d.toLowerCase());
-      return selectedDiets.some(diet => recipeDiets.includes(diet));
+  // Apply cuisine filter
+  const selectedCuisine = cuisineFilter.value;
+  if (selectedCuisine) {
+    filtered = filtered.filter(recipe => {
+      const cuisines = recipe.cuisines || [];
+      return cuisines.some(c => c.toLowerCase().includes(selectedCuisine.toLowerCase()));
     });
   }
 
-  renderRecipes(filtered);
+  // Apply rating filter
+  const selectedRating = parseFloat(ratingFilter.value);
+  if (selectedRating) {
+    filtered = filtered.filter(recipe => {
+      const rating = recipe.spoonacularScore ? recipe.spoonacularScore / 20 : 0;
+      return rating >= selectedRating;
+    });
+  }
+
+  // Apply delivery time filter
+  const selectedDelivery = parseInt(deliveryFilter.value);
+  if (selectedDelivery) {
+    filtered = filtered.filter(recipe => {
+      const deliveryTime = recipe.readyInMinutes || 30;
+      return deliveryTime <= selectedDelivery;
+    });
+  }
+
+  // Apply sort
+  if (sortOrder === 'rating') {
+    filtered.sort((a, b) => {
+      const ratingA = a.spoonacularScore ? a.spoonacularScore / 20 : 0;
+      const ratingB = b.spoonacularScore ? b.spoonacularScore / 20 : 0;
+      return ratingB - ratingA;
+    });
+  }
+
+  renderRestaurants(filtered);
 }
 
-function renderRecipes(recipes) {
-  recipesGrid.innerHTML = '';
+function renderRestaurants(restaurants) {
+  restaurantsGrid.innerHTML = '';
 
-  if (recipes.length === 0) {
-    recipesGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No recipes found. Try searching for something!</p>';
+  if (restaurants.length === 0) {
+    restaurantsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">No restaurants found. Try adjusting your filters!</p>';
     return;
   }
 
-  recipes.forEach(recipe => {
+  restaurants.forEach(recipe => {
     const card = document.createElement('div');
-    card.className = 'recipe-card';
+    card.className = 'restaurant-card';
 
     const rating = recipe.spoonacularScore ? (recipe.spoonacularScore / 20).toFixed(1) : 'N/A';
-    const diets = recipe.diets && recipe.diets.length > 0 ? recipe.diets.join(', ') : 'Mixed';
+    const cuisines = (recipe.cuisines && recipe.cuisines.length > 0) ? recipe.cuisines.join(', ') : 'Multi-Cuisine';
+    const deliveryTime = recipe.readyInMinutes || 30;
+    const deliveryCost = Math.floor(Math.random() * 40) + 20;
+    const minOrder = (Math.floor(Math.random() * 5) + 2) * 100;
 
     card.innerHTML = `
-      <img src="${recipe.image || 'https://via.placeholder.com/280x200?text=Recipe'}" alt="${recipe.title}" class="recipe-image">
-      <div class="recipe-info">
-        <h3 class="recipe-title">${recipe.title}</h3>
-        <div class="recipe-meta">
-          <span><i class="fas fa-clock"></i> ${recipe.readyInMinutes || 'N/A'} mins</span>
-          <span><i class="fas fa-users"></i> ${recipe.servings || 'N/A'} servings</span>
+      <div style="position: relative;">
+        <img src="${recipe.image || 'https://via.placeholder.com/280x160?text=Restaurant'}" alt="${recipe.title}" class="restaurant-image">
+        <div class="restaurant-badge">Pro Seller</div>
+      </div>
+      <div class="restaurant-info">
+        <div class="restaurant-header">
+          <h3 class="restaurant-name">${recipe.title}</h3>
+          <p class="restaurant-cuisines">${cuisines}</p>
         </div>
-        <div class="recipe-meta">
-          <span><i class="fas fa-leaf"></i> ${diets}</span>
+        
+        <div class="restaurant-rating">
+          <span class="stars">${rating !== 'N/A' ? '⭐' : 'N/A'}</span>
+          <span>${rating}/5 (${Math.floor(Math.random() * 500) + 100} ratings)</span>
         </div>
-        ${rating !== 'N/A' ? `
-          <div class="recipe-rating">
-            <span class="stars">${'⭐'.repeat(Math.round(rating / 2))}</span>
-            <span>${rating}/5</span>
-          </div>
-        ` : ''}
-        <button class="recipe-btn" data-id="${recipe.id}">View Recipe</button>
+
+        <div class="restaurant-meta">
+          <span><i class="fas fa-clock"></i> ${deliveryTime} mins</span>
+          <span><i class="fas fa-rupee-sign"></i> ${deliveryCost} delivery</span>
+          <span><i class="fas fa-tag"></i> Min ₹${minOrder}</span>
+        </div>
+
+        <button class="restaurant-btn" data-id="${recipe.id}">Order Now</button>
       </div>
     `;
 
-    card.querySelector('.recipe-btn').addEventListener('click', () => {
-      viewRecipe(recipe.id, recipe.title);
+    card.querySelector('.restaurant-btn').addEventListener('click', () => {
+      orderNow(recipe.id, recipe.title);
     });
 
-    recipesGrid.appendChild(card);
+    restaurantsGrid.appendChild(card);
   });
 }
 
-function viewRecipe(id, title) {
-  alert(`Recipe: ${title}\n\nRecipe ID: ${id}\n\nIn a full app, this would open a detailed recipe page with ingredients and instructions.\n\nVisit: https://spoonacular.com/recipes/${title.replace(/\\s+/g, '-')}-${id}`);
+function orderNow(id, title) {
+  alert(`Added "${title}" to cart!\n\nIn a full app, this would take you to the restaurant menu and checkout page.`);
 }
 
 function showLoading() {
   loadingDiv.style.display = 'block';
-  recipesGrid.innerHTML = '';
+  restaurantsGrid.innerHTML = '';
 }
 
 function hideLoading() {
@@ -176,7 +202,7 @@ function clearError() {
   errorDiv.style.display = 'none';
 }
 
-// Load popular recipes on page load
+// Load popular restaurants on page load
 window.addEventListener('load', () => {
-  searchRecipes('popular');
+  searchRecipes('popular restaurants');
 });

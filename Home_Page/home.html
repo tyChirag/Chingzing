@@ -17,8 +17,8 @@
       </div>
       <ul class="nav-menu">
         <li><a href="#home" class="nav-link">Home</a></li>
-        <li><a href="#search" class="nav-link">Search</a></li>
-        <li><a href="#recipes" class="nav-link">Recipes</a></li>
+        <li><a href="#restaurants" class="nav-link">Restaurants</a></li>
+        <li><a href="#offers" class="nav-link">Offers</a></li>
         <li><a href="#contact" class="nav-link">Contact</a></li>
         <li><a href="login.html" class="nav-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
@@ -32,56 +32,104 @@
 
   <section class="hero" id="home">
     <div class="hero-content">
-      <h1>Welcome to Chingzing</h1>
-      <p>Discover amazing recipes and food delivered to your door</p>
-      <button class="cta-btn">Order Now</button>
-    </div>
-  </section>
-
-  <section class="search-section" id="search">
-    <div class="container">
-      <h2>Find Your Favorite Recipes</h2>
+      <h1>Order food from your favorite restaurants</h1>
+      <p>Fast delivery • Easy payments • Great offers</p>
       <div class="search-box">
         <input 
           type="text" 
           id="search-input" 
-          placeholder="Search recipes (e.g., pasta, burger, pizza)..." 
+          placeholder="Search restaurants, cuisines, or dishes..." 
           class="search-input"
         >
         <button id="search-btn" class="search-btn">
-          <i class="fas fa-search"></i> Search
+          <i class="fas fa-search"></i>
         </button>
       </div>
     </div>
   </section>
 
-  <section class="filters-section">
+  <section class="filters-section" id="restaurants">
     <div class="container">
-      <h3>Filter by</h3>
+      <h2>Find Restaurants</h2>
       <div class="filter-group">
-        <label>
-          <input type="checkbox" class="diet-filter" value="vegetarian">
-          <span>Vegetarian</span>
-        </label>
-        <label>
-          <input type="checkbox" class="diet-filter" value="vegan">
-          <span>Vegan</span>
-        </label>
-        <label>
-          <input type="checkbox" class="diet-filter" value="gluten free">
-          <span>Gluten Free</span>
-        </label>
+        <div class="filter-item">
+          <label for="cuisine-filter">Cuisine:</label>
+          <select id="cuisine-filter" class="filter-select">
+            <option value="">All Cuisines</option>
+            <option value="Chinese">Chinese</option>
+            <option value="Italian">Italian</option>
+            <option value="Mexican">Mexican</option>
+            <option value="Indian">Indian</option>
+            <option value="American">American</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="rating-filter">Rating:</label>
+          <select id="rating-filter" class="filter-select">
+            <option value="">All Ratings</option>
+            <option value="4.5">4.5+</option>
+            <option value="4">4+</option>
+            <option value="3.5">3.5+</option>
+          </select>
+        </div>
+        <div class="filter-item">
+          <label for="delivery-filter">Delivery Time:</label>
+          <select id="delivery-filter" class="filter-select">
+            <option value="">Any Time</option>
+            <option value="20">Under 20 mins</option>
+            <option value="30">Under 30 mins</option>
+            <option value="45">Under 45 mins</option>
+          </select>
+        </div>
+        <button id="sort-btn" class="sort-btn">
+          <i class="fas fa-sort"></i> Sort
+        </button>
       </div>
     </div>
   </section>
 
-  <section class="recipes-section" id="recipes">
+  <section class="restaurants-section">
     <div class="container">
-      <h2>Popular Recipes</h2>
-      <div id="recipes-grid" class="recipes-grid">
+      <div id="restaurants-grid" class="restaurants-grid">
+        <!-- Restaurant cards will be loaded here -->
       </div>
-      <div id="loading" class="loading">Loading recipes...</div>
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Loading restaurants...</p>
+      </div>
       <div id="error" class="error"></div>
+    </div>
+  </section>
+
+  <section class="offers-section" id="offers">
+    <div class="container">
+      <h2>Latest Offers</h2>
+      <div class="offers-grid">
+        <div class="offer-card">
+          <div class="offer-badge">50% OFF</div>
+          <img src="https://images.unsplash.com/photo-1585238341710-4b1264c7ce4b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=60" alt="Offer">
+          <div class="offer-info">
+            <h3>Get 50% off on your first order</h3>
+            <p>Use code: FIRST50</p>
+          </div>
+        </div>
+        <div class="offer-card">
+          <div class="offer-badge">FREE DELIVERY</div>
+          <img src="https://images.unsplash.com/photo-1571407614614-76d0c49a0c7f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=60" alt="Offer">
+          <div class="offer-info">
+            <h3>Free delivery on orders above ₹299</h3>
+            <p>Valid till end of month</p>
+          </div>
+        </div>
+        <div class="offer-card">
+          <div class="offer-badge">₹100 CASHBACK</div>
+          <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=60" alt="Offer">
+          <div class="offer-info">
+            <h3>Get ₹100 cashback on Wallet payment</h3>
+            <p>Minimum order: ₹500</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -90,34 +138,42 @@
       <div class="footer-content">
         <div class="footer-section">
           <h4>Chingzing</h4>
-          <p>Your favorite food delivery app with authentic recipes.</p>
+          <p>India's leading online food delivery platform. Order food online from your favorite restaurants.</p>
         </div>
         <div class="footer-section">
-          <h4>Quick Links</h4>
+          <h4>Company</h4>
           <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#recipes">Recipes</a></li>
             <li><a href="#">About Us</a></li>
-            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Investors</a></li>
           </ul>
         </div>
         <div class="footer-section">
-          <h4>Contact</h4>
-          <p>Email: support@chingzing.com</p>
-          <p>Phone: +1-800-CHINGZING</p>
+          <h4>For Restaurants</h4>
+          <ul>
+            <li><a href="#">Partner With Us</a></li>
+            <li><a href="#">Apps For Restaurants</a></li>
+            <li><a href="#">Restaurant Onboarding</a></li>
+          </ul>
         </div>
         <div class="footer-section">
-          <h4>Follow Us</h4>
-          <div class="social-links">
-            <a href="#"><i class="fab fa-facebook"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-google"></i></a>
-          </div>
+          <h4>Learn More</h4>
+          <ul>
+            <li><a href="#">Privacy</a></li>
+            <li><a href="#">Security</a></li>
+            <li><a href="#">Terms</a></li>
+            <li><a href="#">Sitemap</a></li>
+          </ul>
         </div>
       </div>
       <div class="footer-bottom">
         <p>&copy; 2026 Chingzing. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#"><i class="fab fa-facebook"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
       </div>
     </div>
   </footer>
