@@ -21,6 +21,18 @@ let sortOrder = 'default';
 let suggestions = [];
 let currentSuggestionIndex = 0;
 
+// Fallback food images for better reliability
+const fallbackFoodImages = [
+  'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+  'https://images.pexels.com/photos/3915857/pexels-photo-3915857.jpeg?auto=compress&cs=tinysrgb&w=400',
+  'https://images.pexels.com/photos/1126359/pexels-photo-1126359.jpeg?auto=compress&cs=tinysrgb&w=400',
+  'https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&w=400',
+  'https://images.pexels.com/photos/2641886/pexels-photo-2641886.jpeg?auto=compress&cs=tinysrgb&w=400',
+  'https://images.pexels.com/photos/1373915/pexels-photo-1373915.jpeg?auto=compress&cs=tinysrgb&w=400',
+  'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400',
+  'https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400'
+];
+
 // Hamburger menu toggle
 hamburger.addEventListener('click', () => {
   navMenu.classList.toggle('active');
@@ -258,16 +270,22 @@ function renderSuggestions() {
   // Show 3 items at a time
   const itemsToShow = suggestions.slice(currentSuggestionIndex, currentSuggestionIndex + 3);
 
-  itemsToShow.forEach(recipe => {
+  itemsToShow.forEach((recipe, index) => {
     const card = document.createElement('div');
     card.className = 'suggestion-card';
 
-    const price = Math.floor(Math.random() * 400) + 150; // Random price 150-550
+    const price = Math.floor(Math.random() * 400) + 150;
     const deliveryTime = recipe.readyInMinutes || Math.floor(Math.random() * 30) + 15;
     const discount = [10, 15, 20, 25, 30][Math.floor(Math.random() * 5)];
+    
+    // Use recipe image if available, otherwise use fallback images
+    let imageUrl = recipe.image;
+    if (!imageUrl || imageUrl.includes('via.placeholder')) {
+      imageUrl = fallbackFoodImages[Math.floor(Math.random() * fallbackFoodImages.length)];
+    }
 
     card.innerHTML = `
-      <img src="${recipe.image || 'https://via.placeholder.com/200x140?text=Food'}" alt="${recipe.title}" class="suggestion-image">
+      <img src="${imageUrl}" alt="${recipe.title}" class="suggestion-image" onerror="this.src='https://images.pexels.com/photos/1092730/pexels-photo-1092730.jpeg?auto=compress&cs=tinysrgb&w=400'">
       <div class="suggestion-info">
         <h3 class="suggestion-name">${recipe.title}</h3>
         <p class="suggestion-desc">${recipe.cuisines && recipe.cuisines.length > 0 ? recipe.cuisines[0] + ' cuisine' : 'Delicious dish'}</p>
