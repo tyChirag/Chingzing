@@ -167,6 +167,7 @@ body {
   align-items: center;
   gap: 20px;
   position: relative;
+  justify-content: center;
 }
 
 .carousel-btn {
@@ -183,6 +184,15 @@ body {
   transition: all 0.3s;
   font-size: 18px;
   flex-shrink: 0;
+  position: absolute;
+}
+
+.carousel-btn#prev-btn {
+  left: 0;
+}
+
+.carousel-btn#next-btn {
+  right: 0;
 }
 
 .carousel-btn:hover {
@@ -194,13 +204,16 @@ body {
   flex: 1;
   overflow: hidden;
   border-radius: 12px;
+  padding: 0 60px;
 }
 
 .suggestions-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   padding: 0;
+  max-width: 900px;
+  margin: 0 auto;
 }
 
 .suggestion-card {
@@ -697,6 +710,20 @@ body {
     gap: 16px;
   }
 
+  .suggestions-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .suggestions-wrapper {
+    padding: 0 50px;
+  }
+
+  .carousel-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
   .search-box {
     flex-direction: column;
   }
@@ -737,6 +764,20 @@ body {
   .restaurants-grid,
   .offers-grid {
     grid-template-columns: 1fr;
+  }
+
+  .suggestions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .suggestions-wrapper {
+    padding: 0 40px;
+  }
+
+  .carousel-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
   }
 
   .hero-content h1 {
