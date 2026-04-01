@@ -60,13 +60,17 @@ loginForm.addEventListener('submit', async (event) => {
   const storedUser = getStoredUser();
 
   if (storedUser && storedUser.username === username && storedUser.password === password) {
-    setMessage('Login successful (existing user).', 'success');
+    setMessage('Login successful! Redirecting...', 'success');
     try {
       await saveUserToApi({ username, password });
       console.log('Logged in request stored via API');
     } catch (err) {
       console.warn('API save failed, but local login succeeded', err);
     }
+    // Redirect to home page after 1 second
+    setTimeout(() => {
+      window.location.href = '../Home_Page/home.html';
+    }, 1000);
     return;
   }
 
@@ -83,7 +87,7 @@ loginForm.addEventListener('submit', async (event) => {
   // No user in local storage => register new user
   const newUser = { username, password };
   saveUserLocally(newUser);
-  setMessage('No account found, registered as new user and logged in.', 'success');
+  setMessage('Registration successful! Redirecting...', 'success');
 
   try {
     await saveUserToApi(newUser);
@@ -91,6 +95,11 @@ loginForm.addEventListener('submit', async (event) => {
   } catch (err) {
     console.warn('Could not save to API, local storage still works', err);
   }
+  
+  // Redirect to home page after 1 second
+  setTimeout(() => {
+    window.location.href = '../Home_Page/home.html';
+  }, 1000);
 });
 
 registerLink.addEventListener('click', (e) => {

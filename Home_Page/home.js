@@ -1,6 +1,7 @@
 const API_KEY = '3d30233c2fb74036bd34ab8ba588a5ca';
 const API_BASE = 'https://api.spoonacular.com/recipes';
 const MEALDB_API = 'https://www.themealdb.com/api/json/v1/1';
+const STORAGE_KEY = 'chingzing_user';
 
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.getElementById('search-btn');
@@ -16,6 +17,7 @@ const navMenu = document.querySelector('.nav-menu');
 const suggestionsGrid = document.getElementById('suggestions-grid');
 const prevBtn = document.getElementById('prev-btn');
 const nextBtn = document.getElementById('next-btn');
+const logoutBtn = document.getElementById('logout-btn');
 
 let currentRecipes = [];
 let sortOrder = 'default';
@@ -101,6 +103,24 @@ const fallbackRestaurants = [
     spoonacularScore: 83
   }
 ];
+
+// Check if user is logged in
+function checkUserLogin() {
+  const storedUser = localStorage.getItem(STORAGE_KEY);
+  if (!storedUser) {
+    // Redirect to login page if not logged in
+    window.location.href = '../Login_folder/login.html';
+  }
+}
+
+// Logout functionality
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    localStorage.removeItem(STORAGE_KEY);
+    alert('Logged out successfully!');
+    window.location.href = '../Login_folder/login.html';
+  });
+}
 
 // Hamburger menu toggle
 hamburger.addEventListener('click', () => {
@@ -485,6 +505,9 @@ function addToCart(id, title, price) {
 
 // Load popular restaurants on page load
 window.addEventListener('load', () => {
+  // Check if user is logged in first
+  checkUserLogin();
+  
   // Try to load from API, otherwise fallback to default restaurants
   searchRecipes('popular restaurants').catch(() => {
     console.log('Loading fallback restaurants...');
