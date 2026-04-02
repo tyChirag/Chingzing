@@ -23,6 +23,7 @@ let currentRecipes = [];
 let sortOrder = 'default';
 let suggestions = [];
 let currentSuggestionIndex = 0;
+let suggestionsIntervalId = null;
 
 // Fallback food images for better reliability
 const fallbackFoodImages = [
@@ -397,11 +398,6 @@ async function loadSuggestions() {
       suggestions = data.results;
       currentSuggestionIndex = 0;
       renderSuggestions();
-      
-      // Refresh suggestions every 30 seconds
-      setInterval(() => {
-        loadSuggestions();
-      }, 30000);
     } else {
       console.warn('No Spoonacular suggestions, trying TheMealDB...');
       loadSuggestionsFromMealDB(randomFood);
@@ -523,4 +519,9 @@ window.addEventListener('load', () => {
     currentSuggestionIndex = 0;
     renderSuggestions();
   });
+  if (!suggestionsIntervalId) {
+    suggestionsIntervalId = setInterval(() => {
+      loadSuggestions();
+    }, 30000);
+  }
 });
