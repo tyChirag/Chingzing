@@ -242,15 +242,12 @@ async function fetchFromMealDB(query) {
       }));
       applyFilters();
     } else {
-      console.warn('No meals found in TheMealDB, using fallback restaurants...');
-      showError('Using offline restaurant data. APIs temporarily unavailable.');
+      console.info('No meals found in TheMealDB, using fallback restaurants...');
       currentRecipes = fallbackRestaurants;
       applyFilters();
     }
   } catch (error) {
-    console.error('TheMealDB error:', error);
-    console.warn('Using fallback restaurants data...');
-    showError('APIs unavailable. Showing available restaurants from local data.');
+    console.info('TheMealDB API call failed, using fallback restaurants:', error);
     currentRecipes = fallbackRestaurants;
     applyFilters();
   } finally {
