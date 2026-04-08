@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Food Menu</title>
+		<link rel="stylesheet" href="food.css" />
+	</head>
+	<body>
+		<div class="page-shell">
+			<header class="food-header">
+				<div>
+					<h1>Food Menu</h1>
+					<p>Search and sort dishes by name, cuisine, rating, or price.</p>
+				</div>
+			</header>
+
+			<section class="controls">
+				<div class="control-group">
+					<label for="food-search">Search</label>
+					<input id="food-search" type="search" placeholder="Search by dish or cuisine" />
+				</div>
+
+				<div class="control-group">
+					<label for="food-sort">Sort by</label>
+					<select id="food-sort">
+						<option value="default">Default</option>
+						<option value="name-asc">Name: A → Z</option>
+						<option value="name-desc">Name: Z → A</option>
+						<option value="rating-desc">Rating: High → Low</option>
+						<option value="rating-asc">Rating: Low → High</option>
+						<option value="price-asc">Price: Low → High</option>
+						<option value="price-desc">Price: High → Low</option>
+					</select>
+				</div>
+				<div class="control-group">
+					<label for="food-filter">Filter by cuisine</label>
+					<select id="food-filter">
+						<option value="all">All cuisines</option>
+					</select>
+				</div>
+			</section>
+
+			<main>
+				<div id="food-grid" class="food-grid"></div>
+			</main>
+		</div>
+
+		<script src="food.js"></script>
+	</body>
+</html>
