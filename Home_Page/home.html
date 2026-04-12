@@ -20,6 +20,7 @@
         <li><a href="#restaurants" class="nav-link">Restaurants</a></li>
         <li><a href="#offers" class="nav-link">Offers</a></li>
         <li><a href="#contact" class="nav-link">Contact</a></li>
+        <li><a href="../Cart_Page/cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart <span id="cart-count">0</span></a></li>
         <li><a href="#" id="logout-btn" class="nav-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
       </ul>
       <div class="hamburger">
@@ -95,9 +96,18 @@
             <option value="45">Under 45 mins</option>
           </select>
         </div>
-        <button id="sort-btn" class="sort-btn">
-          <i class="fas fa-sort"></i> Sort
-        </button>
+        <div class="filter-item">
+          <label for="sort-select">Sort by:</label>
+          <select id="sort-select" class="filter-select">
+            <option value="default">Default</option>
+            <option value="rating-desc">Rating: High → Low</option>
+            <option value="rating-asc">Rating: Low → High</option>
+            <option value="delivery-asc">Delivery: Fastest</option>
+            <option value="delivery-desc">Delivery: Slowest</option>
+            <option value="name-asc">Name: A → Z</option>
+            <option value="name-desc">Name: Z → A</option>
+          </select>
+        </div>
       </div>
     </div>
   </section>

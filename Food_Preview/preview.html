@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Food Details - Chingzing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="../Home_Page/home.css">
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <i class="fas fa-utensils"></i> Chingzing
+      </div>
+      <ul class="nav-menu">
+        <li><a href="../Home_Page/home.html" class="nav-link">Home</a></li>
+        <li><a href="../Cart_Page/cart.html" class="nav-link"><i class="fas fa-shopping-cart"></i> Cart <span id="cart-count">0</span></a></li>
+        <li><a href="#" id="logout-btn" class="nav-link logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+      </ul>
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
+  </nav>
+
+  <section class="preview-section container">
+    <div class="back-link">
+      <a href="../Home_Page/home.html"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <div class="preview-container">
+      <div class="preview-image-wrapper">
+        <img src="https://via.placeholder.com/600x400" alt="Food Image" id="preview-image" class="preview-image">
+        <div class="preview-badge" id="preview-badge"><i class="fas fa-fire"></i> Best Seller</div>
+      </div>
+
+      <div class="preview-info">
+        <h1 id="preview-title">Loading...</h1>
+        <p class="preview-cuisines" id="preview-cuisines">Cuisine Info</p>
+        
+        <div class="preview-meta">
+          <div class="meta-item rating">
+            <i class="fas fa-star"></i> <span id="preview-rating">4.5</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-clock"></i> <span id="preview-time">30 mins</span>
+          </div>
+          <div class="meta-item">
+            <i class="fas fa-motorcycle"></i> ₹40 delivery
+          </div>
+        </div>
+
+        <p class="preview-description">
+          A delicious and freshly prepared meal combining the finest ingredients with authentic spices. Enjoy a culinary experience that hits right at home with our signature chef special preparation.
+        </p>
+
+        <div class="price-section">
+          <h2>₹<span id="preview-price">0</span></h2>
+          <span class="old-price" id="preview-old-price"></span>
+        </div>
+
+        <div class="action-section">
+          <div class="quantity-selector">
+            <button id="qty-minus">-</button>
+            <span id="qty-display">1</span>
+            <button id="qty-plus">+</button>
+          </div>
+          <button id="add-to-cart-btn" class="add-to-cart-btn">
+            Add to Cart
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top: none; padding-top: 0;">
+        <p>&copy; 2026 Chingzing. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="preview.js"></script>
+</body>
+</html>
